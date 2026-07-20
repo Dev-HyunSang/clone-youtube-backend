@@ -1,0 +1,69 @@
+@baseUrl = http://localhost:3000/api/v1
+
+### 회원가입
+POST {{baseUrl}}/users/signup
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123",
+  "first_name": "길동",
+  "last_name": "홍",
+  "nickname": "hong",
+  "created_at": "2026-07-17T00:00:00Z",
+  "updated_at": "2026-07-17T00:00:00Z"
+}
+
+### 로그인
+# @name signin
+POST {{baseUrl}}/users/signin
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+
+### 토큰 갱신 (signin 응답의 refresh_token 사용)
+POST {{baseUrl}}/users/refresh
+Content-Type: application/json
+
+{
+  "refresh_token": "{{signin.response.body.$.refresh_token}}"
+}
+
+### 로그아웃 (signin 응답의 access_token 사용)
+POST {{baseUrl}}/users/logout
+Authorization: Bearer {{signin.response.body.$.access_token}}
+
+### 전체 기기 로그아웃
+POST {{baseUrl}}/users/logout-all
+Authorization: Bearer {{signin.response.body.$.access_token}}
+
+### 이메일 인증 코드 발송
+POST {{baseUrl}}/verify/send
+Content-Type: application/json
+
+{
+  "email": "user@example.com"
+}
+
+### 이메일 인증 코드 확인 (6자리, 5분 만료)
+POST {{baseUrl}}/verify/verify
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "code": "123456"
+}
+
+### 영상 업로드 (본문에 영상 바이너리 직접 첨부, 로컬 파일 경로로 교체)
+POST {{baseUrl}}/videos/upload?uploadId=test-upload-1
+Authorization: Bearer {{signin.response.body.$.access_token}}
+Content-Type: video/mp4
+
+< ./sample.mp4
+
+### 업로드 진행률 조회 (폴링)
+GET {{baseUrl}}/videos/upload/test-upload-1/progress
+Authorization: Bearer {{signin.response.body.$.access_token}}

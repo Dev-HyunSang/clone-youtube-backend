@@ -1,0 +1,10 @@
+package request
+
+type SendVerificationCodeRequest struct {
+	Email string `json:"email" binding:"required,email"`
+}
+
+type VerifyEmailCodeRequest struct {
+	Email string `json:"email" binding:"required,email"`
+	Code  string `json:"code" binding:"required,len=6"`
+}
